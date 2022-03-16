@@ -1,5 +1,5 @@
 from background_task import background
-from .models import LabelItem, PathologyPictureItem
+from .models import  PathologyPictureItem
 from pathlib import PurePath
 from django.conf import settings
 import subprocess

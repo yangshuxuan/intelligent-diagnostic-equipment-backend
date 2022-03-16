@@ -1,19 +1,19 @@
 from rest_framework import serializers
 from django.conf import settings
 from django.apps import apps
-from .models import PathologyPictureItem,LabelItem,DiagnosisItem,Diagnosis,Patient, Report
+from .models import PathologyPictureItem,Diagnosis,Patient
 class PathologyPictureItemSerializer(serializers.ModelSerializer):
     # id = serializers.IntegerField()
     # title = serializers.CharField(max_length=255)
     class Meta:
         model = PathologyPictureItem
         fields = ["id","pathologyPicture","createdAt","patient","description"]
-class DiagnosisItemSerializer(serializers.ModelSerializer):
+# class DiagnosisItemSerializer(serializers.ModelSerializer):
     
-    class Meta:
-        model = DiagnosisItem
-        fields = ["id","diagnosis","pathologyPicture","createdAt"]
-    pathologyPicture = PathologyPictureItemSerializer()
+#     class Meta:
+#         model = DiagnosisItem
+#         fields = ["id","diagnosis","pathologyPicture","createdAt"]
+#     pathologyPicture = PathologyPictureItemSerializer()
 class PatientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patient
@@ -22,9 +22,9 @@ class PatientSerializer(serializers.ModelSerializer):
 class DiagnosisSerializer(serializers.ModelSerializer):
     class Meta:
         model = Diagnosis
-        fields = ["id","patient","createdAt",'items']
+        fields = ["id","patient","createdAt"]
     patient = PatientSerializer()
-    items=DiagnosisItemSerializer(many=True,read_only=True)
+    # items=DiagnosisItemSerializer(many=True,read_only=True)
 class DiagnosisPatchSerializer(serializers.ModelSerializer):
     class Meta:
         model=Diagnosis
@@ -33,25 +33,25 @@ class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = apps.get_model(settings.AUTH_USER_MODEL)
         fields = ["id","username"]
-class LabelItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=LabelItem
-        fields=['id','createdAt','modifiedAt','category','x','y','w','h','zoomLevel','doctor','confidence']
-    doctor = DoctorSerializer(read_only=True)
+# class LabelItemSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model=LabelItem
+#         fields=['id','createdAt','modifiedAt','category','x','y','w','h','zoomLevel','doctor','confidence']
+#     doctor = DoctorSerializer(read_only=True)
         
 
-    def create(self, validated_data):
-        diagnosisItem_id = self.context['diagnosisitem_pk']
-        doctor = self.context['doctor']
-        return LabelItem.objects.create(diagnosisItem_id=diagnosisItem_id,doctor=doctor,**validated_data)
-class ReportSerializer(serializers.ModelSerializer):
+#     def create(self, validated_data):
+#         diagnosisItem_id = self.context['diagnosisitem_pk']
+#         doctor = self.context['doctor']
+#         return LabelItem.objects.create(diagnosisItem_id=diagnosisItem_id,doctor=doctor,**validated_data)
+# class ReportSerializer(serializers.ModelSerializer):
     
-    class Meta:
-        model = Report
-        fields = ["id","diagnosis","labelitems","modifiedAt","createdAt","manyi","jinguanxibao","huashengxibao","bumanyi","M","TR","AM","CL","CMV","HSV","IM","S","ASC_US","ASC_H","AGC_NSL_CC","AGC_NSL_E","AGC_NSL_US","LSIL","AGC_FN_CC","AGC_FN_US","HSIL","AIS","SCC","GC_CC","GC_E","GC_OT","OTHER","advice"]
-class ReportPatchSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=Report
-        fields = ["labelitems"]
-    def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
+#     class Meta:
+#         model = Report
+#         fields = ["id","diagnosis","labelitems","modifiedAt","createdAt","manyi","jinguanxibao","huashengxibao","bumanyi","M","TR","AM","CL","CMV","HSV","IM","S","ASC_US","ASC_H","AGC_NSL_CC","AGC_NSL_E","AGC_NSL_US","LSIL","AGC_FN_CC","AGC_FN_US","HSIL","AIS","SCC","GC_CC","GC_E","GC_OT","OTHER","advice"]
+# class ReportPatchSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model=Report
+#         fields = ["labelitems"]
+#     def update(self, instance, validated_data):
+#         return super().update(instance, validated_data)
